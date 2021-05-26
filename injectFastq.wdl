@@ -16,8 +16,8 @@ input {
   }
 
   meta {
-    author: "Yogi Sundaravadanam"
-    email: "ysundaravadanam@oicr.on.ca"
+    author: "Yogi Sundaravadanam, Peter Ruzanov"
+    email: "ysundaravadanam@oicr.on.ca, pruzanov@oicr.on.ca"
     description: "A pipeline that will inject Fastq files "
     dependencies: [
       {
@@ -57,7 +57,6 @@ task processFastq {
     Int jobMemory = 24
     Int mem = 48
     Int overhead = 6
-    Int cores = 1
   }
 
   parameter_meta {
@@ -68,23 +67,17 @@ task processFastq {
     mem: "Memory allocated for alignment task"
     timeout: "Timeout in hours for this task"
     jobMemory: "Java memory for Picard"
-    cores: "The number of cores to allocate to the job."
     modules: "Names and versions of modules needed for variant calling"
   }
 
   command <<<
-  set -euo pipefail
-
-  #Call python script - this needs to be in modulator evenutually
-  python3 /.mounts/labs/gsiprojects/gsi/injection/processFastq.py -f1 ~{pFastqR1} -f2 ~{pFastqR2} -r ~{run} -s ~{sample}
-  
+   python3 /.mounts/labs/gsiprojects/gsi/injection/processFastq.py -f1 ~{pFastqR1} -f2 ~{pFastqR2} -r ~{run} -s ~{sample}
   >>>
 
   runtime {
-    memory: "~{mem} GB"
+    memory:  "~{jobMemory} GB"
     modules: "~{modules}"
     timeout: "~{timeout}"
-    cpu: "~{cores}"
   }
 
   output {
