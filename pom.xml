@@ -10,12 +10,12 @@
         <relativePath/>
     </parent>
  
-    <artifactId>injectFastq</artifactId>
+    <artifactId>checkFastq</artifactId>
     <version>1.0</version>
  
     <properties>
-        <workflow-description>Inject Fastq Files</workflow-description>
-        <wdl-workflow>injectFastq.wdl</wdl-workflow>
+        <workflow-description>Check Fastq Files</workflow-description>
+        <wdl-workflow>checkFastq.wdl</wdl-workflow>
         <test-basedir>tests/</test-basedir>
     </properties>
  
