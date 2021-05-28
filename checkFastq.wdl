@@ -16,7 +16,7 @@ input {
   meta {
     author: "Yogi Sundaravadanam, Peter Ruzanov"
     email: "ysundaravadanam@oicr.on.ca, pruzanov@oicr.on.ca"
-    description: "A workflow for checking Fastq files "
+    description: "A workflow for checking Fastq files, checks if R1 and R2 reads match (same number) and sorts fastq files if needed"
     dependencies: [
       {
         name: "python3/3.6",
@@ -26,7 +26,7 @@ input {
     
     output_meta: {
       outFastqR1: "sorted fastq1",
-      outFastqR2: "sorted fastq2 ",
+      outFastqR2: "sorted fastq2 "
     }
   }
 
@@ -51,15 +51,12 @@ task processFastq {
     String sample
     Int timeout = 72
     Int jobMemory = 24
-    Int mem = 48
-    Int overhead = 6
   }
 
   parameter_meta {
     pFastqR1: "R1"
     pFastqR2: "R2"
-    sample: "Sample prefix "
-    mem: "Memory allocated for alignment task"
+    sample: "Sample prefix"
     timeout: "Timeout in hours for this task"
     jobMemory: "Java memory for Picard"
     modules: "Names and versions of modules needed for variant calling"
@@ -115,7 +112,7 @@ task processFastq {
        sys.exit(1)
 
 
-   checkR1R2(~{pFastqR1}, ~{pFastqR2}, ~{sample})
+   checkR1R2("~{pFastqR1}", "~{pFastqR2}", "~{sample}")
    CODE
   >>>
 
