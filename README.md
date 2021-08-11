@@ -2,8 +2,6 @@
 
 A workflow for checking Fastq files, checks if R1 and R2 reads match (same number) and sorts fastq files if needed
 
-## Overview
-
 ## Dependencies
 
 * [python3 3.6](https://www.python.org/downloads/release/python-360/)
@@ -26,11 +24,6 @@ Parameter|Value|Description
 `sampleName`|String|Sample Name
 
 
-#### Optional workflow parameters:
-Parameter|Value|Default|Description
----|---|---|---
-
-
 #### Optional task parameters:
 Parameter|Value|Default|Description
 ---|---|---|---
@@ -47,30 +40,16 @@ Output | Type | Description
 `outFastqR2`|File|sorted fastq2 
 
 
-## Niassa + Cromwell
-
-This WDL workflow is wrapped in a Niassa workflow (https://github.com/oicr-gsi/pipedev/tree/master/pipedev-niassa-cromwell-workflow) so that it can used with the Niassa metadata tracking system (https://github.com/oicr-gsi/niassa).
-
-* Building
-```
-mvn clean install
-```
-
-* Testing
-```
-mvn clean verify \
--Djava_opts="-Xmx1g -XX:+UseG1GC -XX:+UseStringDeduplication" \
--DrunTestThreads=2 \
--DskipITs=false \
--DskipRunITs=false \
--DworkingDirectory=/path/to/tmp/ \
--DschedulingHost=niassa_oozie_host \
--DwebserviceUrl=http://niassa-url:8080 \
--DwebserviceUser=niassa_user \
--DwebservicePassword=niassa_user_password \
--Dcromwell-host=http://cromwell-url:8000
-```
-
+## Commands
+This section lists command(s) run by WORKFLOW workflow
+ 
+* Running WORKFLOW
+ 
+Workflow runs a custom python script which checks a pair of fastq files for consistency, i.e. 
+that number of reads matches and files are similarly sorted.
+ 
+see the source of checkFastq.py script for details
+ 
 ## Support
 
 For support, please file an issue on the [Github project](https://github.com/oicr-gsi) or send an email to gsi@oicr.on.ca .

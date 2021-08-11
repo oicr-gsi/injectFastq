@@ -1,0 +1,10 @@
+## Commands
+This section lists command(s) run by WORKFLOW workflow
+
+* Running WORKFLOW
+
+Workflow runs a custom python script which checks a pair of fastq files for consistency, i.e. 
+that number of reads matches and files are similarly sorted.
+
+see the source of checkFastq.py script for details
+
