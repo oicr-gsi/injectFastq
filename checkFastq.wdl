@@ -19,7 +19,7 @@ input {
     description: "A workflow for checking Fastq files, checks if R1 and R2 reads match (same number) and sorts fastq files if needed"
     dependencies: [
       {
-        name: "python3/3.6",
+        name: "python3/3.7",
         url: "https://www.python.org/downloads/release/python-360/"
       }
     ]
@@ -45,7 +45,8 @@ input {
   
 task processFastq {
   input {
-    String modules = "python/3.7"
+    String modules = "python/3.7 checkfastq-scripts/1.0"
+    String checkScript = "$CHECKFASTQ_SCRIPTS_ROOT/processFastq.py"
     File pFastqR1
     File pFastqR2
     String sample
@@ -60,62 +61,13 @@ task processFastq {
     timeout: "Timeout in hours for this task"
     jobMemory: "Java memory for Picard"
     modules: "Names and versions of modules needed for variant calling"
+    checkScript: "check script path, may be a custom path (useful for developing)" 
   }
 
   command <<<
-   python3<<CODE
-   import gzip
-   import os
-   import subprocess
-   import sys 
-   def readfile(fastq):
-       fastqfile = gzip.open(fastq, "rb")
-       contents = fastqfile.read()
-       return contents
-
-
-   def checkR1R2(r1, r2, sample):
-       """ extract the headers and check if they are the same for R1 and R2 """
-       cmd = 'zcat ' + r1 + ' | paste - - - - | cut -f 1 -d " " ' + '> headerR1'
-       os.system(cmd)
-       cmd = 'zcat ' + r2 + ' | paste - - - - | cut -f 1 -d " " ' + '> headerR2'
-       os.system(cmd)
-
-       proc = subprocess.check_output('md5sum {0}'.format('headerR1'), shell=True).decode('utf-8').rstrip().split()[0]
-       proc2 = subprocess.check_output('md5sum {0}'.format('headerR2'), shell=True).decode('utf-8').rstrip().split()[0]
-
-       countR1 = subprocess.check_output('cat headerR1 | wc -l', shell=True).decode('utf-8').rstrip().split()[0]
-       countR2 = subprocess.check_output('cat headerR2 | wc -l', shell=True).decode('utf-8').rstrip().split()[0]
-
-       if (countR1 != countR2):
-           die('Read count mismatch!')
-
-       """ if headers are different, sort R1 and R2 """
-       if (proc2 != proc):
-           sortfile(r1)
-           sortfile(r2)
-       else:
-           cmd = 'cp ' + r1 + ' ' + sample + '_R1.fastq.gz'
-           os.system(cmd)
-           cmd = 'cp ' + r2 + ' ' + sample + '_R2.fastq.gz'
-           os.system(cmd)
-
-
-   def sortfile(fastq):
-       out = os.path.basename(fastq)
-       cmd = 'zcat ' + fastq + ' | paste - - - - | sort -k1,1 |tr ' + '"\\t"' + ' "\\n"' + ' | gzip >' + out
-       print(cmd)
-       os.system(cmd)
-
-   def die(msg):
-       print(msg)
-       sys.exit(1)
-
-
-   checkR1R2("~{pFastqR1}", "~{pFastqR2}", "~{sample}")
-   CODE
+   python3 ~{checkScript} -f1 ~{pFastqR1} -f2 ~{pFastqR2} -s ~{sample}
   >>>
-
+  
   runtime {
     memory:  "~{jobMemory} GB"
     modules: "~{modules}"
