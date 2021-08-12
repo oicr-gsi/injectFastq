@@ -1,0 +1,64 @@
+[
+    {
+        "arguments": {
+            "checkFastq.fastqR1": {
+                "contents": {
+                    "configuration": "/.mounts/labs/gsi/testdata/checkFastq/fastq/PHLON21-SARS02810_S77_R1_001.fastq.gz",
+                    "externalIds": [
+                        {
+                            "id": "TEST",
+                            "provider": "TEST"
+                        }
+                    ]
+                },
+                "type": "EXTERNAL"
+            },
+            "checkFastq.fastqR2": {
+                "contents": {
+                    "configuration": "/.mounts/labs/gsi/testdata/checkFastq/fastq/PHLON21-SARS02810_S77_R2_001.fastq.gz",
+                    "externalIds": [
+                        {
+                            "id": "TEST",
+                            "provider": "TEST"
+                        }
+                    ]
+                },
+                "type": "EXTERNAL"
+            },
+            "checkFastq.processFastq.checkScript": null,
+            "checkFastq.processFastq.jobMemory": null,
+            "checkFastq.processFastq.modules": null,
+            "checkFastq.processFastq.timeout": null,
+            "checkFastq.sampleName": "TEST"
+        },
+        "description": "checkFast workflow test",
+        "engineArguments": {},
+        "id": "checkFASTQ",
+        "metadata": {
+            "checkFastq.outFastqR1": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_checkFastq_checkFASTQ_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "checkFastq.outFastqR2": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_checkFastq_checkFASTQ_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            }
+        },
+        "validators": [
+            {
+                "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
+                "metrics_compare": "@CHECKOUT@/tests/compare.sh",
+                "output_metrics": "/.mounts/labs/gsi/testdata/checkFastq/output_metrics/checkFASTQ.metrics",
+                "type": "script"
+            }
+        ]
+    }
+]
