@@ -45,7 +45,7 @@ input {
   
 task processFastq {
   input {
-    String modules = "python/3.6"
+    String modules = "python/3.7"
     File pFastqR1
     File pFastqR2
     String sample

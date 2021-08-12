@@ -4,7 +4,7 @@ A workflow for checking Fastq files, checks if R1 and R2 reads match (same numbe
 
 ## Dependencies
 
-* [python3 3.6](https://www.python.org/downloads/release/python-360/)
+* [python3 3.7](https://www.python.org/downloads/release/python-370/)
 
 
 ## Usage
@@ -27,7 +27,7 @@ Parameter|Value|Description
 #### Optional task parameters:
 Parameter|Value|Default|Description
 ---|---|---|---
-`processFastq.modules`|String|"python/3.6"|Names and versions of modules needed for variant calling
+`processFastq.modules`|String|"python/3.7"|Names and versions of modules needed for variant calling
 `processFastq.timeout`|Int|72|Timeout in hours for this task
 `processFastq.jobMemory`|Int|24|Java memory for Picard
 

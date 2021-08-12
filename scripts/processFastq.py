@@ -3,9 +3,8 @@
 import argparse
 import os
 import shutil
-import subprocess
+from subprocess import *
 import sys
-import hashlib
 
 parser = argparse.ArgumentParser(prog='processFastq.py', description="A tool for fastq validation")
 
@@ -15,38 +14,35 @@ parser.add_argument('-s', '--Sample', dest='sample', help='Sample name', require
 
 args = parser.parse_args()
 
-def getMd5sum(file):
-    """ calculate md5sum for a file and return it """
-    a_file = open(file, "rb")
-    md5_hash = hashlib.md5()
-    content = a_file.read()
-    md5_hash.update(content)
-    return md5_hash.hexdigest()
+
+def getmd5sum(gzfile):
+    psZcat = Popen(['zcat', gzfile], stdout=PIPE, shell=False)
+    ps2 = Popen(['awk', '{if(NR%4==1){print $1}}'], stdout=PIPE, stdin=psZcat.stdout, shell=False)
+    ps3 = run(['md5sum'], stdin=ps2.stdout, capture_output=True, text=True, shell=False)
+    return ps3.stdout.strip().replace('-', '').strip()
 
 
-def createHeader(gzfile, header):
-    """ extract names of the reads in fastq file here """
-    with open(header, 'w') as h:
-        psZcat = subprocess.Popen(['zcat', gzfile], stdout=subprocess.PIPE, shell=False)
-        ps2 = subprocess.Popen(['awk', 'NR%4==1'], stdout=subprocess.PIPE, stdin=psZcat.stdout, shell=False)
-        ps3 = subprocess.Popen(['cut', '-f', '1', '-d', " "], stdin=ps2.stdout, stdout=h, shell=False)
-    print(ps3.communicate()[0])
+def processHeader(gzfile):
+    """ extract names of the reads in fastq file here, do count and md5sum. Return a tuple """
+    psZcat = Popen(['zcat', gzfile], stdout=PIPE, shell=False)
+    ps2 = Popen(['awk', 'NR%4==1'], stdout=PIPE, stdin=psZcat.stdout, shell=False)
+    ps3 = run(['wc', '-l'], stdin=ps2.stdout, capture_output=True, text=True, shell=False)
+
+    read_count = ps3.stdout.strip()
+    md5sum = getmd5sum(gzfile) #ps3.stdout.encode('utf-8')
+
     if ps3.returncode != 0:
         die("Extracting reads failed for " + gzfile)
+
+    return {'reads': int(read_count), 'md5sum': md5sum}
 
 
 def checkR1R2(r1, r2, sample):
     """ extract the headers and check if they are the same for R1 and R2 """
-    createHeader(r1, 'headerR1')
-    createHeader(r2, 'headerR2')
-    countR1 = 0
-    countR2 = 0
-    for _ in open('headerR1').readlines():
-        countR1 += 1
-    for _ in open('headerR2').readlines():
-        countR2 += 1
+    info1 = processHeader(r1)
+    info2 = processHeader(r2)
 
-    if countR1 != countR2:
+    if info1['reads'] != info2['reads']:
         die('Read counts mismatch!')
 
     """ Define the files to save """
@@ -54,12 +50,13 @@ def checkR1R2(r1, r2, sample):
     save_R2 = r2
 
     """ if headers are different, sort R1 and R2 """
-    if getMd5sum('headerR2') != getMd5sum('headerR1'):
+    if info1['md5sum'] != info2['md5sum']:
+        print("Fixing files by sorting...")
         sortedR1 = sortfile(r1)
         sortedR2 = sortfile(r2)
-        createHeader(sortedR1, 'headerR1_sorted')
-        createHeader(sortedR2, 'headerR2_sorted')
-        if getMd5sum('headerR2_sorted') != getMd5sum('headerR1_sorted'):
+        md_sorted1 = getmd5sum(sortedR1)
+        md_sorted2 = getmd5sum(sortedR2)
+        if md_sorted1 != md_sorted2:
             die("R1 and R2 Files do not match!")
         else:
             save_R1 = sortedR1
