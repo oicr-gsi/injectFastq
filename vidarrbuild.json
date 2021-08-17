@@ -1,0 +1,6 @@
+{
+    "names": [
+        "checkFastq"
+    ],
+    "wdl": "checkFastq.wdl"
+}
