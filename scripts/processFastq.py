@@ -10,12 +10,13 @@ parser = argparse.ArgumentParser(prog='processFastq.py', description="A tool for
 
 parser.add_argument('-f1', '--Fastq1', dest='fastq1', help='Path to Fastq1', required=True)
 parser.add_argument('-f2', '--Fastq2', dest='fastq2', help='Path to Fastq2', required=True)
-parser.add_argument('-s', '--Sample', dest='sample', help='Sample name', required=True)
+parser.add_argument('-s',  '--Sample', dest='sample', help='Sample name',    required=True)
 
 args = parser.parse_args()
 
 
 def getmd5sum(gzfile):
+    """ extract wallclock maxvmem and also allocated mem and assigned timeout"""
     psZcat = Popen(['zcat', gzfile], stdout=PIPE, shell=False)
     ps2 = Popen(['awk', '{if(NR%4==1){print $1}}'], stdout=PIPE, stdin=psZcat.stdout, shell=False)
     ps3 = run(['md5sum'], stdin=ps2.stdout, capture_output=True, text=True, shell=False)
@@ -23,7 +24,6 @@ def getmd5sum(gzfile):
 
 
 def processHeader(gzfile):
-    """ extract names of the reads in fastq file here, do count and md5sum. Return a tuple """
     psZcat = Popen(['zcat', gzfile], stdout=PIPE, shell=False)
     ps2 = Popen(['awk', 'NR%4==1'], stdout=PIPE, stdin=psZcat.stdout, shell=False)
     ps3 = run(['wc', '-l'], stdin=ps2.stdout, capture_output=True, text=True, shell=False)

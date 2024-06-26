@@ -25,9 +25,15 @@ input {
     ]
     
     output_meta: {
-      outFastqR1: "sorted fastq1",
-      outFastqR2: "sorted fastq2 "
+    outFastqR1: {
+        description: "sorted fastq1",
+        vidarr_label: "outFastqR1"
+    },
+    outFastqR2: {
+        description: "sorted fastq2 ",
+        vidarr_label: "outFastqR2"
     }
+}
   }
 
   call processFastq {
