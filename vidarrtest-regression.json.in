@@ -32,7 +32,10 @@
             "checkFastq.sampleName": "TEST"
         },
         "description": "checkFast workflow test",
-        "engineArguments": {},
+        "engineArguments": {
+            "write_to_cache": false,
+            "read_from_cache": false
+        },
         "id": "checkFASTQ",
         "metadata": {
             "checkFastq.outFastqR1": {
