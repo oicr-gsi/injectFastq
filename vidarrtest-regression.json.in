@@ -3,7 +3,7 @@
         "arguments": {
             "checkFastq.fastqR1": {
                 "contents": {
-                    "configuration": "/.mounts/labs/gsi/testdata/checkFastq/fastq/PHLON21-SARS02810_S77_R1_001.fastq.gz",
+                    "configuration": "/.mounts/labs/gsi/testdata/checkFastq/test_inputs/Test_R1.fastq.gz",
                     "externalIds": [
                         {
                             "id": "TEST",
@@ -15,7 +15,7 @@
             },
             "checkFastq.fastqR2": {
                 "contents": {
-                    "configuration": "/.mounts/labs/gsi/testdata/checkFastq/fastq/PHLON21-SARS02810_S77_R2_001.fastq.gz",
+                    "configuration": "/.mounts/labs/gsi/testdata/checkFastq/test_inputs/Test_R2.fastq.gz",
                     "externalIds": [
                         {
                             "id": "TEST",
@@ -32,7 +32,10 @@
             "checkFastq.sampleName": "TEST"
         },
         "description": "checkFast workflow test",
-        "engineArguments": {},
+        "engineArguments": {
+            "write_to_cache": false,
+            "read_from_cache": false
+        },
         "id": "checkFASTQ",
         "metadata": {
             "checkFastq.outFastqR1": {
@@ -56,7 +59,7 @@
             {
                 "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
                 "metrics_compare": "@CHECKOUT@/tests/compare.sh",
-                "output_metrics": "/.mounts/labs/gsi/testdata/checkFastq/output_metrics/checkFASTQ.metrics",
+                "output_metrics": "/.mounts/labs/gsi/testdata/checkFastq/output_metrics/workflow_test_01.metrics",
                 "type": "script"
             }
         ]
